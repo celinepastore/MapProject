@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
     <script type="text/javascript" src="paths.js"></script>
-    
+
 
 </head>
 <body>
@@ -59,17 +59,15 @@
 
         }
 
-        
         var geojsonLayer = L.geoJSON(myZoneUW, {
             style: styleFunction, onEachFeature: happenHover
         }).addTo(map);
-        
 
         //var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover }).addTo(map);
         var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
 
         // style color
-        
+
         // Indoors vs outdoors
         /*
         function styleFunction(feature) {
@@ -86,7 +84,7 @@
         function oldStyle() { geojsonLayer.setStyle({ color: "green" }); }
         function clickStyle(e) { e.target.setStyle({ color: "red" });  }
 
-        
+
         // hover function
         function happenHover(feature, layer) {
             layer.on('click', function (e) { clickStyle(e); });
@@ -95,7 +93,7 @@
             layer.on('mouseover', function (e) { newStyle(e) });
             layer.on('mouseout', oldStyle);
             layer.on('mouseout', function () { layer.closePopup(); });
-            
+
         }
 
         // click function
@@ -115,10 +113,6 @@
         // hover
         // geojsonLayer.on('mouseover', newStyle);
         // geojsonLayer.on('mouseout', oldStyle);
-
-        function addDesc(feature, layer) {
-            layer.bindPopup('<b>' + feature.properties.name + '</b>', { closeButton: true });
-        }
 
         function pathStyle(feature) {
             return {
@@ -142,7 +136,7 @@
 
         function walk() {
             pathsLayer.addTo(map);
-            map.removeLayer(parksLayer);
+            //map.removeLayer(parksLayer);
         }
 
         function conditions() {
@@ -151,13 +145,15 @@
         }
 
 
-        
+
 
 
 
     </script>
-    <p><center>
-           <button onclick="walk()">Show me some pleasant rambles.</button>    
-    </center></p>
+    <p>
+        <center>
+            <button onclick="walk()">Show me some pleasant rambles.</button>
+        </center>
+    </p>
 </body>
 </html>
