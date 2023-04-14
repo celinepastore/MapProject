@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
     <script type="text/javascript" src="paths.js"></script>
-    <script type="text/javascript" src="parks.js"></script>
-    <script type="text/javascript" src="plants.js"></script>
+
 
 </head>
 <body>
@@ -25,11 +24,8 @@
         */
 
        var homeMarker = L.marker([47.6715986, -122.3070282], { draggable: false }).addTo(map).bindPopup("<b>Home!</b>").openPopup();
-        //var testMarker = L.marker([47.6790000, -122.3070286], { draggable: false }).addTo(map).bindPopup("<b>testing</b>").openPopup();
 
-        map.setView([47.655548, -122.303200], 13, { animation: true });
-       // map.setView([47.6730927122554, -122.31273293495177])
-       // map.setView([47.653929, -122.30828])
+        map.setView([47.655548, -122.303200], 13,{ animation: true });
 
         // Comfort zones on UW campus
         var myZoneUW = {
@@ -50,24 +46,28 @@
                     "name": "Northwest Rose Garden", "PopupContents": "Roses near the fountain", "Indoor": "No"
                 },
                 "geometry": { "type": "Polygon", "coordinates": [[[-122.30828, 47.653929], [-122.308304, 47.653858], [-122.308327, 47.653784], [-122.308507, 47.653957], [-122.308184, 47.654082], [-122.30828, 47.653929]]] }
-                }
+                },
+            {
+
+               "type": "Feature", "properties": {
+                        "name": "3rd Place", "PopupContents": "Books and pub", "Indoor": "yes"
+                    },
+               "geometry": { "type": "Point", "coordinates": [-122.30828, 47.653929]}
+               }
 
             ]
 
         }
 
-        
         var geojsonLayer = L.geoJSON(myZoneUW, {
             style: styleFunction, onEachFeature: happenHover
         }).addTo(map);
-        
 
-        var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover });
+        //var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover }).addTo(map);
         var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
-        var plantsLayer = L.geoJSON(plants, { style: plantStyle, onEachFeature: happenHover }).addTo(map);
 
         // style color
-        
+
         // Indoors vs outdoors
         /*
         function styleFunction(feature) {
@@ -84,7 +84,7 @@
         function oldStyle() { geojsonLayer.setStyle({ color: "green" }); }
         function clickStyle(e) { e.target.setStyle({ color: "red" });  }
 
-        
+
         // hover function
         function happenHover(feature, layer) {
             layer.on('click', function (e) { clickStyle(e); });
@@ -93,7 +93,7 @@
             layer.on('mouseover', function (e) { newStyle(e) });
             layer.on('mouseout', oldStyle);
             layer.on('mouseout', function () { layer.closePopup(); });
-            
+
         }
 
         // click function
@@ -114,20 +114,6 @@
         // geojsonLayer.on('mouseover', newStyle);
         // geojsonLayer.on('mouseout', oldStyle);
 
-        function addDesc(feature, layer) {
-            layer.bindPopup('<b>' + feature.properties.name + '</b>', { closeButton: true });
-        }
-
-        function defaultStyle(feature) {
-            return {
-                fillColor: feature.properties.fill,
-                weight: 2,
-                opacity: 1,
-                color: feature.properties.stroke,
-                fillOpacity: 0.5
-            };
-        }
-
         function pathStyle(feature) {
             return {
                 fillColor: feature.properties.fill,
@@ -141,9 +127,8 @@
 
         function plantStyle(feature) {
             return {
-                "marker-color": "#555555", //"#008000",
-                "fill": "#555555",
-                "marker-size": "small",
+                "marker-color": "#008000",
+                "marker-size": "medium",
                 "marker-symbol": "garden"
             }
 
@@ -151,7 +136,7 @@
 
         function walk() {
             pathsLayer.addTo(map);
-            map.removeLayer(parksLayer);
+            //map.removeLayer(parksLayer);
         }
 
         function conditions() {
@@ -160,14 +145,15 @@
         }
 
 
-        
+
 
 
 
     </script>
-    <p><center>
-    <button onclick="walk()">Show me some pleasant rambles.</button>
-    <button onclick="conditions()">Show me some peaceful parks.</button>
-</center></p>
+    <p>
+        <center>
+            <button onclick="walk()">Show me some pleasant rambles.</button>
+        </center>
+    </p>
 </body>
 </html>
