@@ -1,4 +1,9 @@
 ﻿<!DOCTYPE html>
+<style>
+    img.huechange {
+        filter: hue-rotate(160deg);
+    }
+</style>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -23,9 +28,12 @@
         var myLayer = L.geoJSON().addTo(map);
         myLayer.addData(geojsonFeature);
         */
-
+        
        var homeMarker = L.marker([47.6715986, -122.3070282], { draggable: false }).addTo(map).bindPopup("<b>Home!</b>").openPopup();
         //var testMarker = L.marker([47.6790000, -122.3070286], { draggable: false }).addTo(map).bindPopup("<b>testing</b>").openPopup();
+        
+        homeMarker._icon.classList.add("huechange");
+
 
         map.setView([47.655548, -122.303200], 13, { animation: true });
        // map.setView([47.6730927122554, -122.31273293495177])
