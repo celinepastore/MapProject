@@ -3,6 +3,7 @@
     img.huechange {
         filter: hue-rotate(170deg);
     }
+
 </style>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -31,8 +32,10 @@
         
        var homeMarker = L.marker([47.6715986, -122.3070282], { draggable: false }).addTo(map).bindPopup("<b>Home!</b>").openPopup();
         //var testMarker = L.marker([47.6790000, -122.3070286], { draggable: false }).addTo(map).bindPopup("<b>testing</b>").openPopup();
-        
+
+        // two ways to change color
         homeMarker._icon.classList.add("huechange");
+        homeMarker._icon.style.filter = "hue-rotate(50deg)"
 
 
         map.setView([47.655548, -122.303200], 13, { animation: true });
@@ -72,7 +75,9 @@
 
         var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover });
         var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
-        var plantsLayer = L.geoJSON(plants, { style: plantStyle, onEachFeature: happenHover }).addTo(map);
+        var plantsLayer = L.geoJSON(plants, { style: plantStyle, onEachFeature: happenHover2}).addTo(map);
+
+        plantsLayer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>' + feature.properties.PopupContents, { closeButton: true});
 
         // style color
         
@@ -102,6 +107,15 @@
             layer.on('mouseout', oldStyle);
             layer.on('mouseout', function () { layer.closePopup(); });
             
+        }
+
+        // hover and open
+        function happenHover2(feature, layer) {
+            layer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>' + feature.properties.PopupContents, { closeButton: false});
+            layer.on('mouseover', function () { layer.openPopup(); });
+            layer.on('mouseout', function () { layer.closePopup(); });
+            layer.on('click', layer.openPopup());
+
         }
 
         // click function
@@ -167,7 +181,40 @@
             map.removeLayer(pathsLayer);
         }
 
+        // try this next time
+        // sunset point
+        var popup = L.popup();
 
+        function onMapClick(e) {
+            var message = headHome(e.latlng);
+            popup
+                .setLatLng(e.latlng)
+                .setContent("You're current location is " + e.latlng.toString() + "<br><b>" + message + "</b>")  //this.getLatLng() don't work
+                //.setContent("Sunset at " + L.sun.sunset(e.latlng))  //this.getLatLng() don't work
+                .openOn(map);
+        }
+
+        function headHome(latlng) {
+            var message = "Directions: ";
+            if (latlng.lat > 47.6715986) {
+                message = message + "Head South * ";
+            } else if (latlng.lat < 47.6715986) {
+                message = message + "Head North * ";
+            } else {
+                message = message + "You're on the right latitude!  ";
+            }
+
+            if (latlng.lng > -122.3070282) {
+                message = message + "Head West";
+            } else if (latlng.lng < -122.3070282) {
+                message = message + "Head East  ";
+            } else {
+                message = message + "You're on the right meridian!  ";
+            }
+            return message;
+        }
+
+        map.on('click', onMapClick);
         
 
 
