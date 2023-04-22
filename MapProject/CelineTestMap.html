@@ -1,12 +1,20 @@
 ﻿<!DOCTYPE html>
+<style>
+    img.huechange {
+        filter: hue-rotate(170deg);
+    }
+
+</style>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Lab5</title>
+    <title>Plan Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
-    <script src="paths.js"></script>
+    <script type="text/javascript" src="paths.js"></script>
+    <script type="text/javascript" src="parks.js"></script>
+    <script type="text/javascript" src="plants.js"></script>
 
 </head>
 <body>
@@ -21,10 +29,18 @@
         var myLayer = L.geoJSON().addTo(map);
         myLayer.addData(geojsonFeature);
         */
-
+        
        var homeMarker = L.marker([47.6715986, -122.3070282], { draggable: false }).addTo(map).bindPopup("<b>Home!</b>").openPopup();
+        //var testMarker = L.marker([47.6790000, -122.3070286], { draggable: false }).addTo(map).bindPopup("<b>testing</b>").openPopup();
 
-        map.setView([47.655548, -122.303200], 13,{ animation: true });
+        // two ways to change color
+        homeMarker._icon.classList.add("huechange");
+        homeMarker._icon.style.filter = "hue-rotate(50deg)"
+
+
+        map.setView([47.655548, -122.303200], 13, { animation: true });
+       // map.setView([47.6730927122554, -122.31273293495177])
+       // map.setView([47.653929, -122.30828])
 
         // Comfort zones on UW campus
         var myZoneUW = {
@@ -45,25 +61,23 @@
                     "name": "Northwest Rose Garden", "PopupContents": "Roses near the fountain", "Indoor": "No"
                 },
                 "geometry": { "type": "Polygon", "coordinates": [[[-122.30828, 47.653929], [-122.308304, 47.653858], [-122.308327, 47.653784], [-122.308507, 47.653957], [-122.308184, 47.654082], [-122.30828, 47.653929]]] }
-                },
-            {
-
-               "type": "Feature", "properties": {
-                        "name": "3rd Place", "PopupContents": "Books and pub", "Indoor": "yes"
-                    },
-               "geometry": { "type": "Point", "coordinates": [-122.30828, 47.653929]}
-               }
+                }
 
             ]
 
         }
 
+        
         var geojsonLayer = L.geoJSON(myZoneUW, {
             style: styleFunction, onEachFeature: happenHover
         }).addTo(map);
+        
 
-        //var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover }).addTo(map);
+        var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover });
         var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
+        var plantsLayer = L.geoJSON(plants, { style: plantStyle, onEachFeature: happenHover2}).addTo(map);
+
+        plantsLayer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>' + feature.properties.PopupContents, { closeButton: true});
 
         // style color
         
@@ -95,6 +109,15 @@
             
         }
 
+        // hover and open
+        function happenHover2(feature, layer) {
+            layer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>' + feature.properties.PopupContents, { closeButton: false});
+            layer.on('mouseover', function () { layer.openPopup(); });
+            layer.on('mouseout', function () { layer.closePopup(); });
+            layer.on('click', layer.openPopup());
+
+        }
+
         // click function
         function happenClick(feature, layer) {
             layer.on('click', function (e) { clickStyle(e); });
@@ -113,6 +136,20 @@
         // geojsonLayer.on('mouseover', newStyle);
         // geojsonLayer.on('mouseout', oldStyle);
 
+        function addDesc(feature, layer) {
+            layer.bindPopup('<b>' + feature.properties.name + '</b>', { closeButton: true });
+        }
+
+        function defaultStyle(feature) {
+            return {
+                fillColor: feature.properties.fill,
+                weight: 2,
+                opacity: 1,
+                color: feature.properties.stroke,
+                fillOpacity: 0.5
+            };
+        }
+
         function pathStyle(feature) {
             return {
                 fillColor: feature.properties.fill,
@@ -126,8 +163,9 @@
 
         function plantStyle(feature) {
             return {
-                "marker-color": "#008000",
-                "marker-size": "medium",
+                "marker-color": "#555555", //"#008000",
+                "fill": "#555555",
+                "marker-size": "small",
                 "marker-symbol": "garden"
             }
 
@@ -143,14 +181,48 @@
             map.removeLayer(pathsLayer);
         }
 
+        // try this next time
+        // sunset point
+        var popup = L.popup();
 
+        function onMapClick(e) {
+            var message = headHome(e.latlng);
+            popup
+                .setLatLng(e.latlng)
+                .setContent("You're current location is " + e.latlng.toString() + "<br><b>" + message + "</b>")  //this.getLatLng() don't work
+                //.setContent("Sunset at " + L.sun.sunset(e.latlng))  //this.getLatLng() don't work
+                .openOn(map);
+        }
+
+        function headHome(latlng) {
+            var message = "Directions: ";
+            if (latlng.lat > 47.6715986) {
+                message = message + "Head South * ";
+            } else if (latlng.lat < 47.6715986) {
+                message = message + "Head North * ";
+            } else {
+                message = message + "You're on the right latitude!  ";
+            }
+
+            if (latlng.lng > -122.3070282) {
+                message = message + "Head West";
+            } else if (latlng.lng < -122.3070282) {
+                message = message + "Head East  ";
+            } else {
+                message = message + "You're on the right meridian!  ";
+            }
+            return message;
+        }
+
+        map.on('click', onMapClick);
         
 
 
 
     </script>
     <p><center>
-           <button onclick="walk()">Show me some pleasant rambles.</button>    
-    </center></p>
+    <button onclick="walk()">Show me some pleasant rambles.</button>
+    <button onclick="conditions()">Show me some peaceful parks.</button>
+</center></p>
 </body>
 </html>

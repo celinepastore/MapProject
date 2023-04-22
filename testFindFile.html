@@ -3,10 +3,11 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Lab5</title>
+    <title>Plan Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
-    <script src="paths.js"></script>
+    <script type="text/javascript" src="paths.js"></script>
+
 
 </head>
 <body>
@@ -66,7 +67,7 @@
         var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
 
         // style color
-        
+
         // Indoors vs outdoors
         /*
         function styleFunction(feature) {
@@ -83,7 +84,7 @@
         function oldStyle() { geojsonLayer.setStyle({ color: "green" }); }
         function clickStyle(e) { e.target.setStyle({ color: "red" });  }
 
-        
+
         // hover function
         function happenHover(feature, layer) {
             layer.on('click', function (e) { clickStyle(e); });
@@ -92,7 +93,7 @@
             layer.on('mouseover', function (e) { newStyle(e) });
             layer.on('mouseout', oldStyle);
             layer.on('mouseout', function () { layer.closePopup(); });
-            
+
         }
 
         // click function
@@ -135,7 +136,7 @@
 
         function walk() {
             pathsLayer.addTo(map);
-            map.removeLayer(parksLayer);
+            //map.removeLayer(parksLayer);
         }
 
         function conditions() {
@@ -144,13 +145,15 @@
         }
 
 
-        
+
 
 
 
     </script>
-    <p><center>
-           <button onclick="walk()">Show me some pleasant rambles.</button>    
-    </center></p>
+    <p>
+        <center>
+            <button onclick="walk()">Show me some pleasant rambles.</button>
+        </center>
+    </p>
 </body>
 </html>
