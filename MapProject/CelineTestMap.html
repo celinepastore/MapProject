@@ -3,7 +3,6 @@
     img.huechange {
         filter: hue-rotate(170deg);
     }
-
 </style>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -16,190 +15,212 @@
     <script type="text/javascript" src="paths.js"></script>
     <script type="text/javascript" src="parks.js"></script>
     <script type="text/javascript" src="plants.js"></script>
-    
+
 </head>
 <body>
     <div id="mapD" style="width: 800px; height: 600px; margin: auto; Border: 1px solid #AAA"></div>
     <script>
         // <script type="text/javascript" src="C:/Users/ceilp/source/repos/MapProject/MapProject/Shoreline/center_loc.js">
-    var map = L.map('mapD', { center: [47.655548, -122.303200], zoom: 10 });
-    // var map = L.map('mapD').setView([35.10418, -106.62987], zoom: 10);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        var map = L.map('mapD', { center: [47.655548, -122.303200], zoom: 10 });
+        // var map = L.map('mapD').setView([35.10418, -106.62987], zoom: 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    map.setView([47.6715986, -122.3070282], 13, { animation: true });
+        map.setView([47.6715986, -122.3070282], 13, { animation: true });
 
-    // add an empty layer to populate later
-    var myLayer = L.geoJSON().addTo(map);
-    /*
-    myLayer.addData(geojsonFeature);
-    */
+        // add an empty layer to populate later
+        var myLayer = L.geoJSON().addTo(map);
+        /*
+        myLayer.addData(geojsonFeature);
+        */
 
-    var homeMarker = L.marker([47.6715986, -122.3070282], { draggable: false }).addTo(map).bindPopup("<b>Home!</b>"); //.openPopup();
-    //var testMarker = L.marker([47.6790000, -122.3070286], { draggable: false }).addTo(map).bindPopup("<b>testing</b>").openPopup();
+        var homeMarker = L.marker([47.6715986, -122.3070282], { draggable: false }).addTo(map).bindPopup("<b>Home!</b>"); //.openPopup();
+        //var testMarker = L.marker([47.6790000, -122.3070286], { draggable: false }).addTo(map).bindPopup("<b>testing</b>").openPopup();
 
-    // two ways to change color
-    homeMarker._icon.classList.add("huechange");
-    homeMarker._icon.style.filter = "hue-rotate(50deg)"
-
-
-
-    var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover });
-    var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
-    var plantsLayer = L.geoJSON(plants, { style: plantStyle, onEachFeature: happenHover2}).addTo(map);
-
-    var fileloc = "C:/Users/ceilp/source/repos/MapProject/MapProject/"
-
-     var sc = document.createElement("script");
-        sc.setAttribute("src", src = "C:/Users/ceilp/source/repos/MapProject/MapProject/Shoreline/center_loc.js");
-        sc.setAttribute("type", "text/javascript");
-        document.head.appendChild(sc);
-       // console.log(set_loc.coordinates);
-
-    // style color
-
-    // Indoors vs outdoors
-    /*
-    function styleFunction(feature) {
-    switch (feature.properties.Indoor) {
-    case "Yes": return {color:"red"};
-    case "No": return {color:"purple"};
-    }
-    }
-    */
-
-    // all purple or green
-    function styleFunction() { return { color: "green" } }
-    function newStyle(e) { e.target.setStyle({ color: "blue" }); }
-    function oldStyle() { geojsonLayer.setStyle({ color: "green" }); }
-    function clickStyle(e) { e.target.setStyle({ color: "red" });  }
+        // two ways to change color
+        homeMarker._icon.classList.add("huechange");
+        homeMarker._icon.style.filter = "hue-rotate(50deg)"
 
 
-    // hover function
-    function happenHover(feature, layer) {
-    layer.on('click', function (e) { clickStyle(e); });
-    layer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>' + feature.properties.PopupContents, { closeButton: false });
-    layer.on('mouseover', function () { layer.openPopup(); });
-    layer.on('mouseover', function (e) { newStyle(e) });
-    layer.on('mouseout', oldStyle);
-    layer.on('mouseout', function () { layer.closePopup(); });
 
-    }
+        var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover });
+        var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
+        var plantsLayer = L.geoJSON(plants, { style: plantStyle, onEachFeature: happenHover2 }).addTo(map);
 
-    // hover and open
-    function happenHover2(feature, layer) {
-    layer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>'
-    + feature.properties.PopupContents, { closeButton: false });
-    layer.on('click', layer.openPopup());
-    layer.on('mouseout', function () { layer.closePopup(); });
-    }
+        var fileloc = "./"
 
-    // click function
-    function happenClick(feature, layer) {
-    layer.on('click', function (e) { clickStyle(e); });
-    }
-
-
-    function addDesc(feature, layer) {
-    layer.bindPopup('<b>' + feature.properties.name + '</b>', { closeButton: true });
-    }
-
-    function defaultStyle(feature) {
-    return {
-    fillColor: feature.properties.fill,
-    weight: 2,
-    opacity: 1,
-    color: feature.properties.stroke,
-    fillOpacity: 0.5
-    };
-    }
-
-    function pathStyle(feature) {
-    return {
-    fillColor: feature.properties.fill,
-    weight: 2,
-    opacity: 1,
-    color: feature.properties.stroke,
-    fillOpacity: 0.5,
-    dashArray: "5,5"
-    };
-    }
-
-    function plantStyle(feature) {
-    return {
-    "marker-color": "#555555", //"#008000",
-    "fill": "#555555",
-    "marker-size": "small",
-    "marker-symbol": "garden"
-    }
-
-    }
-
-    function walk() {
-    pathsLayer.addTo(map);
-    map.removeLayer(parksLayer);
-    }
-
-    function conditions() {
-    parksLayer.addTo(map);
-    map.removeLayer(pathsLayer);
-    }
-
-    function zoomto(zoomloc) {
-    var zoompt;
-    console.log("zooming to " + zoomloc);
-    if (zoomloc == "Shoreline") {
-        var f = fileloc + zoomloc + "/" + "center_loc.js";
-        console.log(f);
         var sc = document.createElement("script");
-        sc.setAttribute("src", src = f);
+        sc.setAttribute("src", src = "./Shoreline/center_loc.js");
         sc.setAttribute("type", "text/javascript");
         document.head.appendChild(sc);
-        zoompt = L.latLng(set_loc.coordinates);
-        //zoompt = [47.748886, -122.360388];
-    }
-    else if (zoomloc == "Home") { zoompt = [47.6715986, -122.3070282]; }
-    else { zoom = [47.6715986, -122.3070282]; };
+        console.log("ln55: initial append child")
 
-    map.setView(zoompt, 17, { animation: true });
+        
+        // console.log(set_loc.coordinates);
 
-    }
+        // style color
 
-    // try this next time
-    // sunset point
-    /*
-    var popup = L.popup();
+        // Indoors vs outdoors
+        /*
+        function styleFunction(feature) {
+        switch (feature.properties.Indoor) {
+        case "Yes": return {color:"red"};
+        case "No": return {color:"purple"};
+        }
+        }
+        */
 
-    function onMapClick(e) {
-    var message = headHome(e.latlng);
-    popup
-    .setLatLng(e.latlng)
-    .setContent("You're current location is " + e.latlng.toString() + "<br><b>" + message + "</b>")  //this.getLatLng() don't work
-    //.setContent("Sunset at " + L.sun.sunset(e.latlng))  //this.getLatLng() don't work
-    .openOn(map);
-    }
+        // all purple or green
+        function styleFunction() { return { color: "green" } }
+        function newStyle(e) { e.target.setStyle({ color: "blue" }); }
+        function oldStyle() { geojsonLayer.setStyle({ color: "green" }); }
+        function clickStyle(e) { e.target.setStyle({ color: "red" }); }
 
-    function headHome(latlng) {
-    var message = "Directions: ";
-    if (latlng.lat > 47.6715986) {
-    message = message + "Head South * ";
-    } else if (latlng.lat < 47.6715986) {
-    message = message + "Head North * ";
-    } else {
-    message = message + "You're on the right latitude!  ";
-    }
 
-    if (latlng.lng > -122.3070282) {
-    message = message + "Head West";
-    } else if (latlng.lng < -122.3070282) {
-    message = message + "Head East  ";
-    } else {
-    message = message + "You're on the right meridian!  ";
-    }
-    return message;
-    }
+        // hover function
+        function happenHover(feature, layer) {
+            layer.on('click', function (e) { clickStyle(e); });
+            layer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>' + feature.properties.PopupContents, { closeButton: false });
+            layer.on('mouseover', function () { layer.openPopup(); });
+            layer.on('mouseover', function (e) { newStyle(e) });
+            layer.on('mouseout', oldStyle);
+            layer.on('mouseout', function () { layer.closePopup(); });
 
-    map.on('click', onMapClick);
-    */
+        }
+
+        // hover and open
+        function happenHover2(feature, layer) {
+            layer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>'
+                + feature.properties.PopupContents, { closeButton: false });
+            layer.on('click', layer.openPopup());
+            layer.on('mouseout', function () { layer.closePopup(); });
+        }
+
+        // click function
+        function happenClick(feature, layer) {
+            layer.on('click', function (e) { clickStyle(e); });
+        }
+
+
+        function addDesc(feature, layer) {
+            layer.bindPopup('<b>' + feature.properties.name + '</b>', { closeButton: true });
+        }
+
+        function defaultStyle(feature) {
+            return {
+                fillColor: feature.properties.fill,
+                weight: 2,
+                opacity: 1,
+                color: feature.properties.stroke,
+                fillOpacity: 0.5
+            };
+        }
+
+        function pathStyle(feature) {
+            return {
+                fillColor: feature.properties.fill,
+                weight: 2,
+                opacity: 1,
+                color: feature.properties.stroke,
+                fillOpacity: 0.5,
+                dashArray: "5,5"
+            };
+        }
+
+        function plantStyle(feature) {
+            return {
+                "marker-color": "#555555", //"#008000",
+                "fill": "#555555",
+                "marker-size": "small",
+                "marker-symbol": "garden"
+            }
+
+        }
+
+        function walk() {
+            pathsLayer.addTo(map);
+            map.removeLayer(parksLayer);
+        }
+
+        function conditions() {
+            parksLayer.addTo(map);
+            map.removeLayer(pathsLayer);
+        }
+
+        function zoomto(zoomloc) {
+            var zoompt;
+            console.log("button click enter zoomto " + zoomloc);
+            if (zoomloc != "Home") {
+                //console.log("current child: " + sc);
+                sc = document.head.removeChild(sc);
+                var f = fileloc + zoomloc + "/" + "center_loc.js";
+                console.log(f);
+                var c = document.createElement("script");
+                c.setAttribute("src", src = f);
+                c.setAttribute("type", "text/javascript");
+                document.head.appendChild(c);
+                console.log("new child: " + c.outerHTML);
+                console.log("coords shoreline: " + set_loc.coordinates);
+                zoompt = L.latLng(set_loc.coordinates);
+                map.setView(zoompt, 17, { animation: true });
+                sc = c;
+                //console.log("saved child: " + sc);
+                //Shoreline zoompt = [48.748886, -122.360388];
+                //Shoreline 2 zoompt = [47.751001, -122.362235];
+            }
+            else if (zoomloc == "Home") {
+                document.head.removeChild(sc);
+                console.log("here at home");
+                zoompt = [47.6715986, -122.3070282];
+                map.setView(zoompt, 17, { animation: true });
+                document.head.appendChild(sc);
+                console.log("new child: " + sc.outerHTML);
+            }
+            else {
+                console.log("something went wrong");
+                zoompt = [47.6715986, -122.3070282];
+
+            };
+
+            //map.setView(zoompt, 17, { animation: true });
+
+        }
+
+        // try this next time
+        // sunset point
+        /*
+        var popup = L.popup();
+
+        function onMapClick(e) {
+        var message = headHome(e.latlng);
+        popup
+        .setLatLng(e.latlng)
+        .setContent("You're current location is " + e.latlng.toString() + "<br><b>" + message + "</b>")  //this.getLatLng() don't work
+        //.setContent("Sunset at " + L.sun.sunset(e.latlng))  //this.getLatLng() don't work
+        .openOn(map);
+        }
+
+        function headHome(latlng) {
+        var message = "Directions: ";
+        if (latlng.lat > 47.6715986) {
+        message = message + "Head South * ";
+        } else if (latlng.lat < 47.6715986) {
+        message = message + "Head North * ";
+        } else {
+        message = message + "You're on the right latitude!  ";
+        }
+
+        if (latlng.lng > -122.3070282) {
+        message = message + "Head West";
+        } else if (latlng.lng < -122.3070282) {
+        message = message + "Head East  ";
+        } else {
+        message = message + "You're on the right meridian!  ";
+        }
+        return message;
+        }
+
+        map.on('click', onMapClick);
+        */
 
 
 
@@ -209,8 +230,10 @@
             <button onclick="walk()">Show me some pleasant rambles.</button>
             <button onclick="conditions()">Show me some peaceful parks.</button>
             <button onclick="zoomto('Shoreline')">Shoreline</button>
+            <button onclick="zoomto('Shoreline2')">Shoreline2</button>
             <button onclick="zoomto('Home')">Home</button>
         </center>
     </p>
 </body>
 </html>
+

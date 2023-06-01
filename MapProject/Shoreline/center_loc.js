@@ -1,1 +1,2 @@
-var set_loc = { "coordinates": [47.748886, -122.360388] };
+//Shoreline
+var set_loc = { "coordinates": [48.748886, - 122.360388] };
