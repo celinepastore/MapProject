@@ -146,9 +146,11 @@
             map.removeLayer(pathsLayer);
         }
 
-        function zoomto(zoomloc) {
+   
+
+        function switchfile(zoomloc, callback) {
             var zoompt;
-            console.log("button click enter zoomto " + zoomloc);
+            console.log("button click enter switchfile " + zoomloc);
             if (zoomloc != "Home") {
                 //console.log("current child: " + sc);
                 sc = document.head.removeChild(sc);
@@ -158,22 +160,25 @@
                 c.setAttribute("src", src = f);
                 c.setAttribute("type", "text/javascript");
                 document.head.appendChild(c);
-                console.log("new child: " + c.outerHTML);
-                console.log("coords shoreline: " + set_loc.coordinates);
-                zoompt = L.latLng(set_loc.coordinates);
-                map.setView(zoompt, 17, { animation: true });
+
+                c.onload = function () {
+                    console.log("new script loaded!");
+                    console.log("new child: " + c.outerHTML);
+                    console.log("coords shoreline: " + set_loc.coordinates);
+                    zoompt = L.latLng(set_loc.coordinates);
+                    map.setView(zoompt, 17, { animation: true });
+                   // callback(); //WHY is callback() not needed? only purpose is to print alert
+                };
+                                 
                 sc = c;
-                //console.log("saved child: " + sc);
-                //Shoreline zoompt = [48.748886, -122.360388];
-                //Shoreline 2 zoompt = [47.751001, -122.362235];
+            
+                //Ocean zoompt = [48.748886, -122.360388];
+                //Shoreline zoompt = [47.751001, -122.362235];
             }
             else if (zoomloc == "Home") {
-                document.head.removeChild(sc);
                 console.log("here at home");
                 zoompt = [47.6715986, -122.3070282];
                 map.setView(zoompt, 17, { animation: true });
-                document.head.appendChild(sc);
-                console.log("new child: " + sc.outerHTML);
             }
             else {
                 console.log("something went wrong");
@@ -229,9 +234,13 @@
         <center>
             <button onclick="walk()">Show me some pleasant rambles.</button>
             <button onclick="conditions()">Show me some peaceful parks.</button>
-            <button onclick="zoomto('Shoreline')">Shoreline</button>
-            <button onclick="zoomto('Shoreline2')">Shoreline2</button>
-            <button onclick="zoomto('Home')">Home</button>
+            <button onclick="switchfile('Shoreline', function() {
+                 //alert('script ready!'); 
+                })">Shoreline</button>
+            <button onclick="switchfile('Ocean', function() {
+                  //alert('script ready!'); 
+                })">Ocean</button>
+            <button onclick="switchfile('Home')">Home</button>
         </center>
     </p>
 </body>
