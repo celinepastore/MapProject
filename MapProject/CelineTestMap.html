@@ -15,6 +15,8 @@
     <script type="text/javascript" src="paths.js"></script>
     <script type="text/javascript" src="parks.js"></script>
     <script type="text/javascript" src="plants.js"></script>
+    <script type="text/javascript" src="plants2.js"></script>
+
 
 </head>
 <body>
@@ -23,7 +25,8 @@
         // <script type="text/javascript" src="C:/Users/ceilp/source/repos/MapProject/MapProject/Shoreline/center_loc.js">
         var map = L.map('mapD', { center: [47.655548, -122.303200], zoom: 10 });
         // var map = L.map('mapD').setView([35.10418, -106.62987], zoom: 10);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            , { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
 
         map.setView([47.6715986, -122.3070282], 13, { animation: true });
 
@@ -44,7 +47,8 @@
 
         var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover });
         var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
-        var plantsLayer = L.geoJSON(plants, { style: plantStyle, onEachFeature: happenHover2 }).addTo(map);
+        var plantsLayer = L.geoJSON(plants2, { style: plantStyle, onEachFeature: happenHover2 }).addTo(map);
+        //var newPlantsLayer = L.geoJSON(newPlants, { style: plantStyle, onEachFeature: happenHover2 }).addTo(map);
 
         var fileloc = "./"
 
@@ -69,6 +73,18 @@
         }
         */
 
+        // where am I?
+        var popup = L.popup();
+
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent("You clicked the map at " + e.latlng.toString())
+                .openOn(map);
+        }
+
+        map.on('click', onMapClick);
+
         // all purple or green
         function styleFunction() { return { color: "green" } }
         function newStyle(e) { e.target.setStyle({ color: "blue" }); }
@@ -90,9 +106,12 @@
         // hover and open
         function happenHover2(feature, layer) {
             layer.bindPopup('<b>' + feature.properties.name + '</b>' + '<br>'
-                + feature.properties.PopupContents, { closeButton: false });
-            layer.on('click', layer.openPopup());
-            layer.on('mouseout', function () { layer.closePopup(); });
+                + '<i>' + feature.properties.PopupContents + '</i>' + '<br>'
+                + feature.properties.description, { closeButton: true });
+            layer.on('mouseover', function () { layer.openPopup(); });
+            layer.on('click', function () { layer.openPopup(); });
+            //layer.on('mouseout', function () { layer.closePopup(); });
+            
         }
 
         // click function
@@ -168,6 +187,7 @@
                     zoompt = L.latLng(set_loc.coordinates);
                     map.setView(zoompt, 17, { animation: true });
                    // callback(); //WHY is callback() not needed? only purpose is to print alert
+                    //L.geoJSON(newPlants, { style: plantStyle, onEachFeature: happenHover2 }).addTo(map);
                 };
                                  
                 sc = c;
