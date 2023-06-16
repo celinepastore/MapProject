@@ -11,3 +11,4 @@ C:\Users\ceilp\source\repos\MapProject\MapProject\bin\Debug\netcoreapp3.1\MapPro
 C:\Users\ceilp\source\repos\MapProject\MapProject\obj\Debug\netcoreapp3.1\MapProject.dll
 C:\Users\ceilp\source\repos\MapProject\MapProject\obj\Debug\netcoreapp3.1\MapProject.pdb
 C:\Users\ceilp\source\repos\MapProject\MapProject\obj\Debug\netcoreapp3.1\MapProject.genruntimeconfig.cache
+C:\Users\ceilp\source\repos\MapProject\MapProject\obj\Debug\netcoreapp3.1\MapProject.csproj.AssemblyReference.cache

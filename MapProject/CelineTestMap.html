@@ -3,6 +3,9 @@
     img.huechange {
         filter: hue-rotate(170deg);
     }
+    img.huechange2 {
+        filter: hue-rotate(90deg);
+    }
 </style>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -32,6 +35,25 @@
 
         // add an empty layer to populate later
         var myLayer = L.geoJSON().addTo(map);
+
+        // custom icon
+        var plantIcon = L.icon({
+            iconUrl: './leaf.png',
+            //shadowUrl: 'leaf-shadow.png',
+
+            iconSize: [38, 95], // size of the icon
+            //shadowSize: [50, 64], // size of the shadow
+            iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+            //shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
+        });
+        var leafIcon = L.icon({
+            iconUrl: 'leaf.png', // 'https://st2.depositphotos.com/1062321/7703/v/950/depositphotos_77032909-stock-illustration-new-mexico-flag.jpg',
+            iconSize: [50, 50],
+            iconAnchor: [24, 40],
+        });
+       
+
         /*
         myLayer.addData(geojsonFeature);
         */
@@ -40,15 +62,30 @@
         //var testMarker = L.marker([47.6790000, -122.3070286], { draggable: false }).addTo(map).bindPopup("<b>testing</b>").openPopup();
 
         // two ways to change color
-        homeMarker._icon.classList.add("huechange");
-        homeMarker._icon.style.filter = "hue-rotate(50deg)"
+        homeMarker._icon.classList.add("huechange2");
+        //homeMarker._icon.style.filter = "hue-rotate(50deg)"
 
 
 
         var parksLayer = L.geoJSON(parks, { style: defaultStyle, onEachFeature: happenHover });
         var pathsLayer = L.geoJSON(paths, { style: pathStyle, onEachFeature: addDesc });
-        var plantsLayer = L.geoJSON(plants2, { style: plantStyle, onEachFeature: happenHover2 }).addTo(map);
+        
         //var newPlantsLayer = L.geoJSON(newPlants, { style: plantStyle, onEachFeature: happenHover2 }).addTo(map);
+
+       
+        var plantsLayer = L.geoJSON(plants2, {
+            onEachFeature: happenHover2,
+            pointToLayer: function (feature, latlng) {
+                if (feature.properties.location == "Shoreline") {
+                    return L.circleMarker(latlng).setStyle({color: 'red', fillColor: 'blue' });;
+                } else {
+                    return L.marker(latlng, {
+                        icon: leafIcon, title: "leaf", alt: 'leaf icon'
+                        , draggable: false, autoPan: true
+                    });
+                }
+            }
+        }).addTo(map);
 
         var fileloc = "./"
 
@@ -84,6 +121,40 @@
         }
 
         map.on('click', onMapClick);
+
+        // custom point from geojson leaflet tutorial
+        var geojsonMarkerOptions = {
+            radius: 8,
+            fillColor: "#ff7800",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        };
+
+        var someGeojsonFeature = {
+            "type": "Feature",
+            "properties": {
+                "name": "Shoreline Community College",
+                "PopupContents": "Go Phins!",
+                "description": ""
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-122.359929, 47.748969]
+            }
+        };
+
+        formatPoints(someGeojsonFeature);
+
+        function formatPoints(featureCollection) {
+            L.geoJSON(featureCollection, {
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, geojsonMarkerOptions);
+                }, onEachFeature: happenHover2
+            }).addTo(map);
+        }
+        
 
         // all purple or green
         function styleFunction() { return { color: "green" } }
